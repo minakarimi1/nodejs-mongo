@@ -20,6 +20,11 @@ const usersShema = new mongoose.Schema({
 const Users = mongoose.model("Users", usersShema);
 
 
+//get how root '/'
+app.get('/', (req,res)=>{
+  console.log('welcom to home page');
+  res.json({help:"user help",country_api:"/api/country",country_params_id_api:"/api/country/id"});
+})
 
 
 app.listen(port,()=>{
