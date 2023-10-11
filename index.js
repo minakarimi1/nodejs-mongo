@@ -1,11 +1,11 @@
 import mongoose from "mongoose";
 mongoose
-  .connect("mongodb://127.0.0.1:27017/myapp2")
+  .connect("mongodb://127.0.0.1:27017/myapp")
   .then(() => console.log("connected to database"))
   .catch((error) => console.log("can not connected to database") + error);
 
   //create Schema
-  const usersShema = mongoose.Schema({
+  const usersShema = new mongoose.Schema({
     firstName: { type: String },
     lastName: { type: String, require: true },
     age: {type : Number},
