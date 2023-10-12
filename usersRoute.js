@@ -78,8 +78,15 @@ async (req, res) => {
 
 //put
 // json format => /api/user/65280cab92...  update parametrs {"firstName":"mohammad"...}
-userRouter.put("/:id", async (req, res) => {
+userRouter.put("/:id", 
+[body("firstName", "firstName cant be empty").notEmpty()],
+async (req, res) => {
   try {
+     //validate
+     const errors = validationResult(req);
+     if(!errors.isEmpty()){return res.status(404).json({data: null ,errors: errors.array(), message: "validation error"})};
+
+    //create newUser
     let userUpdate = await Users.findByIdAndUpdate(req.params.id, {
       firstName: req.body.firstName,
       lastName: req.body.lastName,
