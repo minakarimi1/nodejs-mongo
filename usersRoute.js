@@ -10,6 +10,7 @@ userRouter.get("/", async (req, res) => {
       data: userList,
       message: "OK",
     });
+    console.log(userList);
   } catch (error) {
     res.status(500).json({
       data: null,
@@ -18,17 +19,18 @@ userRouter.get("/", async (req, res) => {
     });
   }
 });
-
+//get user by Id example=> /api/user/12345
 userRouter.get("/:id", async (req, res) => {
   try {
     const user = await Users.findById(req.params.id);
     if (!user)
-      return res.status(404).json({ data: null, message: "User not found" });
+      return res.status(404).json({ data: null, message: "User ID not found" });
 
     res.status(200).json({
       data: user,
       message: "OK",
     });
+    console.log(user);
   } catch (error) {
     res.status(500).json({
       data: null,
@@ -38,6 +40,7 @@ userRouter.get("/:id", async (req, res) => {
   }
 });
 
+//post json format example=> {"firstName":"mina","lastName":"karimi","age":27}
 userRouter.post("/", async (req, res) => {
   try {
     const newUser = new Users({
@@ -47,7 +50,7 @@ userRouter.post("/", async (req, res) => {
     });
 
     await newUser.save();
-
+    console.log(newUser);
     res.status(201).json({
       data: newUser,
       message: "User created successfully",
