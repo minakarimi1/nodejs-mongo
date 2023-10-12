@@ -3,7 +3,6 @@ import express from "express";
 
 const userRouter = express.Router();
 
-
 userRouter.get("/", async (req, res) => {
   try {
     const userList = await Users.find();
@@ -12,12 +11,11 @@ userRouter.get("/", async (req, res) => {
       message: "OK",
     });
     console.log(userList);
-
   } catch (error) {
     res.status(404).json({
-      data:null,
-      massage: "Error while fetching user"
-    })
+      data: null,
+      massage: "Error while fetching user",
+    });
     console.log(error.message);
   }
 });
@@ -34,7 +32,6 @@ userRouter.get("/:id", async (req, res) => {
       message: "OK",
     });
     console.log(user);
-
   } catch (error) {
     res.status(404).json({
       data: null,
@@ -87,5 +84,12 @@ userRouter.put("/:id", async (req, res) => {
   res.status(200).json({ data: userUpdate, message: "ok" });
 });
 
-
+//delete
+userRouter.delete("/:id", async (req, res) => {
+  const deleteUser = await Users.findByIdAndDelete(req.params.id);
+  if (!deleteUser) {
+    return res.status(404).json({ data: null, message: "this id not find" });
+  }
+  res.status(200).json({ data: deleteUser, message: "ok" });
+});
 export default userRouter;
