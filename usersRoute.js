@@ -92,10 +92,17 @@ userRouter.put("/:id", async (req, res) => {
 
 //delete
 userRouter.delete("/:id", async (req, res) => {
-  const deleteUser = await Users.findByIdAndDelete(req.params.id);
-  if (!deleteUser) {
-    return res.status(404).json({ data: null, message: "this id not find" });
+  try {
+    const deleteUser = await Users.findByIdAndDelete(req.params.id);
+    if (!deleteUser) {
+      return res.status(404).json({ data: null, message: "this id not find" });
+    }
+    res.status(200).json({ data: deleteUser, message: "ok" });
+  } catch (error) {
+    res
+      .status(404)
+      .json({ data: null, message: "Error while fetching user by ID" });
   }
-  res.status(200).json({ data: deleteUser, message: "ok" });
+  console.log(error.message);
 });
 export default userRouter;
