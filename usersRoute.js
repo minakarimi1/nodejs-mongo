@@ -60,28 +60,34 @@ userRouter.post("/", async (req, res) => {
     res.status(404).json({
       data: null,
       message: "Error while creating user",
-      error: error.message,
     });
+    console.log(error.message);
   }
 });
 
 //put
 // json format => /api/user/65280cab92...  update parametrs {"firstName":"mohammad"...}
 userRouter.put("/:id", async (req, res) => {
-  let userUpdate = await Users.findByIdAndUpdate(req.params.id, {
-    firstName: req.body.firstName,
-    lastName: req.body.lastName,
-    age: req.body.age,
-  });
-
-  if (!userUpdate) {
-    return res.status(404).json({
-      data: null,
-      message: "this user with the given id was not find",
+  try {
+    let userUpdate = await Users.findByIdAndUpdate(req.params.id, {
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      age: req.body.age,
     });
-  }
 
-  res.status(200).json({ data: userUpdate, message: "ok" });
+    if (!userUpdate) {
+      return res.status(404).json({
+        data: null,
+        message: "this user with the given id was not find",
+      });
+    }
+    res.status(200).json({ data: userUpdate, message: "ok" });
+  } catch (error) {
+    res
+      .status(404)
+      .json({ data: null, message: "Error while fetching user by ID" });
+  }
+  console.log(error.message);
 });
 
 //delete
