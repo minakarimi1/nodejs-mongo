@@ -1,24 +1,27 @@
 import Users from "./model/usersModel.js";
 import express from "express";
-
+import { body, validationResult } from "express-validator";
 const userRouter = express.Router();
 
-userRouter.get("/", async (req, res) => {
-  try {
-    const userList = await Users.find();
-    res.status(200).json({
-      data: userList,
-      message: "OK",
-    });
-    console.log(userList);
-  } catch (error) {
-    res.status(404).json({
-      data: null,
-      massage: "Error while fetching user",
-    });
-    console.log(error.message);
+userRouter.get(
+  "/",
+  async (req, res) => {
+    try {
+      const userList = await Users.find();
+      res.status(200).json({
+        data: userList,
+        message: "OK",
+      });
+      console.log(userList);
+    } catch (error) {
+      console.log(error.message);
+      res.status(404).json({
+        data: null,
+        massage: "Error while fetching user",
+      });
+    }
   }
-});
+);
 
 //get user by Id example=> /api/user/12345
 userRouter.get("/:id", async (req, res) => {
@@ -33,17 +36,24 @@ userRouter.get("/:id", async (req, res) => {
     });
     console.log(user);
   } catch (error) {
+    console.log(error.message);
     res.status(404).json({
       data: null,
       message: "Error while fetching user by ID",
     });
-    console.log(error.message);
   }
 });
 
 //post json format example=> {"firstName":"mina","lastName":"karimi","age":27}
-userRouter.post("/", async (req, res) => {
+userRouter.post("/",
+[body("firstName", "firstName cant be empty").notEmpty()],
+async (req, res) => {
   try {
+    //validate
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){return res.status(404).json({data: null ,errors: errors.array(), message: "validation error"})};
+
+    //create newUser
     const newUser = new Users({
       firstName: req.body.firstName,
       lastName: req.body.lastName,
@@ -56,12 +66,13 @@ userRouter.post("/", async (req, res) => {
       data: newUser,
       message: "User created successfully",
     });
+
   } catch (error) {
+    console.log(error.message);
     res.status(404).json({
       data: null,
       message: "Error while creating user",
     });
-    console.log(error.message);
   }
 });
 
@@ -83,11 +94,11 @@ userRouter.put("/:id", async (req, res) => {
     }
     res.status(200).json({ data: userUpdate, message: "ok" });
   } catch (error) {
+    // console.log(error.message);
     res
       .status(404)
       .json({ data: null, message: "Error while fetching user by ID" });
   }
-  console.log(error.message);
 });
 
 //delete
@@ -99,10 +110,10 @@ userRouter.delete("/:id", async (req, res) => {
     }
     res.status(200).json({ data: deleteUser, message: "ok" });
   } catch (error) {
+    console.log(error.message);
     res
       .status(404)
       .json({ data: null, message: "Error while fetching user by ID" });
   }
-  console.log(error.message);
 });
 export default userRouter;
